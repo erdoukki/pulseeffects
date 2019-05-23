@@ -10,7 +10,9 @@ jobs:
       G_MESSAGES_DEBUG: pulseeffects
     steps:
       - checkout
-      - run: pacman -Syu --noconfirm && pacman -S --noconfirm bash pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv
+      - run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm bash pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv xorg-server-xvfb
       - run:
           name: Start Xvfb
           command: Xvfb $DISPLAY -screen 0 1920x1080x24
