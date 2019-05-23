@@ -1,4 +1,4 @@
-#!/usr/bin
+#!/usr/bin/env bash
 
 echo 'export LANG="C"' >> $BASH_ENV
 echo 'export DISPLAY=":1"' >> $BASH_ENV

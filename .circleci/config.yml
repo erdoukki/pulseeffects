@@ -6,7 +6,7 @@ jobs:
       - image: archlinux/base:latest
     steps:
       - checkout
-      - run: pacman -Syu --noconfirm && pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv
+      - run: pacman -Syu --noconfirm && pacman -S --noconfirm bash pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv
       - run: .circleci/circleci_env_variables.sh
       # Start Xvfb in background
       - run: Xvfb :1 &
