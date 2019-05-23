@@ -7,11 +7,11 @@ jobs:
     steps:
       - checkout
       - run: pacman -Syu --noconfirm && pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv
-      - run: export LANG=C DISPLAY=:1 G_MESSAGES_DEBUG=pulseeffects
+      - run: source .circleci/circleci_env_variables.sh
       # Start Xvfb in background
       - run: Xvfb :1 &
       # start Pulseaudio with virtual sink and source
-      - run: ./util/start_pulseaudio.sh
+      - run: .circleci/start_pulseaudio.sh
       # build PulseEffects
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       # start PulseEffects in service mode
