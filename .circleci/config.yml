@@ -4,17 +4,21 @@ jobs:
   archlinux:
     docker:
       - image: archlinux/base:latest
+    environment:
+      LANG: C
+      DISPLAY: :10
+      G_MESSAGES_DEBUG: pulseeffects
     steps:
       - checkout
       - run: pacman -Syu --noconfirm && pacman -S --noconfirm bash pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv
-      - run:
-          name: Setup Environment Variables
-          command: |
-            echo 'export LANG=C' >> $BASH_ENV
-            echo 'export DISPLAY=:1' >> $BASH_ENV
-            echo 'export G_MESSAGES_DEBUG=pulseeffects' >> $BASH_ENV
+      # - run:
+      #     name: Setup Environment Variables
+      #     command: |
+      #       echo 'export LANG=C' >> $BASH_ENV
+      #       echo 'export DISPLAY=:1' >> $BASH_ENV
+      #       echo 'export G_MESSAGES_DEBUG=pulseeffects' >> $BASH_ENV
       # Start Xvfb in background
-      - run: Xvfb :1 &
+      - run: Xvfb :10 &
       # start Pulseaudio with virtual sink and source
       - run: .circleci/start_pulseaudio.sh
       # build PulseEffects
