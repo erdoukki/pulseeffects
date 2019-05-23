@@ -4,19 +4,28 @@ jobs:
   archlinux:
     docker:
       - image: archlinux/base:latest
+    environment:
+      # Guarantee consistency of language strings in GUIs and CLI outputs
+      LANG: C
+      # Enable PE debug mode
+      G_MESSAGES_DEBUG: pulseeffects
+      # Xvfb display
+      DISPLAY: :1
     steps:
       - checkout
       - run: pacman -Syu --noconfirm && pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv
       # Start Xvfb in background
-      - run: Xvfb :1 & export DISPLAY=:1
+      - run: Xvfb :1 &
       # start Pulseaudio with virtual sink and source
       - run: ./util/start_pulseaudio.sh
       # build PulseEffects
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       # start PulseEffects in service mode
-      - run: G_MESSAGES_DEBUG=pulseeffects pulseeffects --gapplication-service &
+      - run: pulseeffects --gapplication-service & sleep 5
       # open PE window
       - run: pulseeffects &
+      # finish PE
+      - run: pulseeffects -q
 
 workflows:
   version: 2
