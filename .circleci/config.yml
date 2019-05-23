@@ -4,11 +4,6 @@ jobs:
   archlinux:
     docker:
       - image: archlinux/base:latest
-    environment:
-      # Guarantee consistency of language strings in GUIs and CLI outputs
-      LANG: "C"
-      # Enable PE debug mode
-      G_MESSAGES_DEBUG: "pulseeffects"
     steps:
       - checkout
       - run: pacman -Syu --noconfirm && pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv
@@ -19,7 +14,7 @@ jobs:
       # build PulseEffects
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       # start PulseEffects in service mode
-      - run: pulseeffects --gapplication-service &
+      - run: G_MESSAGES_DEBUG=pulseeffects pulseeffects --gapplication-service &
       # open PE window
       - run: pulseeffects &
 
