@@ -16,7 +16,7 @@ jobs:
           keys:
             - pacman-cache
       - run: |
-          pacman -Su --noconfirm
+          pacman -Su --noconfirm --cachedir pacman_cache
           pacman -S --cachedir pacman_cache --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv calf zam-plugins rubberband mda.lv2 lsp-plugins xorg-server-xvfb
           pacman -Sc --cachedir pacman_cache --noconfirm
       - save_cache:
@@ -33,11 +33,14 @@ jobs:
           background: true
       # start Pulseaudio with virtual sink and source
       - run: .circleci/start_pulseaudio.sh
+      - run:
+          name: Starting a GStreamer pipeline
+          command: gst-launch-1.0 -v audiotestsrc ! queue ! pulsesink
       # build PulseEffects
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       - run:
           name: Starting a GStreamer pipeline
-          command: gst-launch-1.0 -v pulsesrc ! queue ! pulsesink
+          command: gst-launch-1.0 -v audiotestsrc ! queue ! pulsesink
           background: true
       - run:
           name: Starting PE service
