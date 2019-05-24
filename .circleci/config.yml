@@ -11,19 +11,13 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p pacman_cache && pacman -Sy --noconfirm && pacman -S tar --noconfirm
+      - run: pacman -Sc --noconfirm --cachedir pacman_cache
       - restore_cache:
           keys:
             - pacman-cache
       - run: |
-          if [ "$(ls -A pacman_cache)" ]
-          then
-             cp -v pacman_cache/* /var/cache/pacman/pkg/
-          fi
-      - run: |
           pacman -Su --noconfirm
           pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv calf zam-plugins rubberband mda.lv2 lsp-plugins xorg-server-xvfb
-          ls /var/cache/pacman/pkg
-      - run: rm -rf pacman_cache/* && cp -v /var/cache/pacman/pkg/* pacman_cache
       - save_cache:
           key: pacman-cache
           paths:
