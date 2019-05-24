@@ -10,19 +10,20 @@ jobs:
       G_MESSAGES_DEBUG: pulseeffects
     steps:
       - checkout
+      - mkdir -p pacman_cache && pacman -Sy --noconfirm && pacman -S tar
       - restore_cache:
           keys:
             - pacman-cache
       - run: cp -v pacman_cache/* /var/cache/pacman/pkg/
       - run: |
-          pacman -Syu --noconfirm
+          pacman -Su --noconfirm
           pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv calf zam-plugins rubberband mda.lv2 lsp-plugins xorg-server-xvfb
           pacman -Sc --noconfirm
-      - run: rm -rf pacman_cache && mkdir -p pacman_cache
+      - run: rm -rf pacman_cache/* && cp -v /var/cache/pacman/pkg/* pacman_cache
       - save_cache:
           key: pacman-cache
           paths:
-            - /var/cache/pacman/pkg/
+            - pacman_cache
       - run:
           name: Starting dbus
           command: echo 'export $(dbus-launch)' >> $BASH_ENV
