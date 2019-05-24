@@ -11,6 +11,7 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p pacman_cache && pacman -Sy --noconfirm && pacman -S tar --noconfirm
+      - run: pacman -Sc --noconfirm
       - restore_cache:
           keys:
             - pacman-cache
