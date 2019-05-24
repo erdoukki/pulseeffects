@@ -16,7 +16,7 @@ jobs:
           background: true
       - run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm bash pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv xorg-server-xvfb
+          pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv calf zam-plugins rubberband mda.lv2 lsp-plugins xorg-server-xvfb
       - run:
           name: Starting Xvfb
           command: Xvfb $DISPLAY -screen 0 1920x1080x24
@@ -25,10 +25,14 @@ jobs:
       - run: .circleci/start_pulseaudio.sh
       # build PulseEffects
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
-      # start PulseEffects in service mode
-      - run: pulseeffects --gapplication-service & sleep 5
-      # open PE window
-      - run: pulseeffects &
+      - run:
+          name: Starting PE service
+          command: pulseeffects --gapplication-service
+          background: true
+      - run:
+          name: Open PE window
+          command: pulseeffects
+          background: true
       # finish PE
       - run: pulseeffects -q
 
