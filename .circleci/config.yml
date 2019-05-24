@@ -53,7 +53,7 @@ jobs:
                 pulseeffects --gapplication-service &
                 sleep 10
                 echo "open PE window"
-                pulseeffects
+                pulseeffects &
                 sleep 10
                 echo "finish PE process"
                 pulseeffects -q || true
