@@ -10,13 +10,23 @@ jobs:
       G_MESSAGES_DEBUG: pulseeffects
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - pacman-cache
+      - run: cp -v pacman_cache/* /var/cache/pacman/pkg/
+      - run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv calf zam-plugins rubberband mda.lv2 lsp-plugins xorg-server-xvfb
+          pacman -Sc --noconfirm
+      - run: rm -rf pacman_cache && mkdir -p pacman_cache
+      - save_cache:
+          key: pacman-cache
+          paths:
+            - /var/cache/pacman/pkg/
       - run:
           name: Starting dbus
           command: echo 'export $(dbus-launch)' >> $BASH_ENV
           background: true
-      - run: |
-          pacman -Syu --noconfirm
-          pacman -S --noconfirm pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv calf zam-plugins rubberband mda.lv2 lsp-plugins xorg-server-xvfb
       - run:
           name: Starting Xvfb
           command: Xvfb $DISPLAY -screen 0 1920x1080x24
@@ -26,15 +36,13 @@ jobs:
       # build PulseEffects
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       - run:
+          name: Starting a GStreamer pipeline
+          command: gst-launch pulsesrc ! queue ! pulsesink
+          background: true
+      - run:
           name: Starting PE service
           command: pulseeffects --gapplication-service
           background: true
-      - run:
-          name: Open PE window
-          command: pulseeffects
-          background: true
-      # finish PE
-      - run: pulseeffects -q
 
 workflows:
   version: 2
