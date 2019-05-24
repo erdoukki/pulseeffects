@@ -10,23 +10,24 @@ jobs:
       G_MESSAGES_DEBUG: pulseeffects
     steps:
       - checkout
-      - run: |
-          pacman -Syu --noconfirm
-          pacman -S --noconfirm bash pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv xorg-server-xvfb
-      - run:
-          name: Start Xvfb
-          command: Xvfb $DISPLAY -screen 0 1920x1080x24
-          background: true
-      # start Pulseaudio with virtual sink and source
-      - run: .circleci/start_pulseaudio.sh
-      # build PulseEffects
-      - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
-      # start PulseEffects in service mode
-      - run: pulseeffects --gapplication-service & sleep 5
-      # open PE window
-      - run: pulseeffects &
-      # finish PE
-      - run: pulseeffects -q
+      - run: systemctl status dbus
+      # - run: |
+      #     pacman -Syu --noconfirm
+      #     pacman -S --noconfirm bash pkg-config git gcc meson itstool boost appstream-glib gettext gtk3 gtkmm3 glibmm pulseaudio gstreamer gst-plugins-good gst-plugins-bad boost-libs libsigc++ libsndfile libsamplerate zita-convolver libebur128 lilv xorg-server-xvfb
+      # - run:
+      #     name: Start Xvfb
+      #     command: Xvfb $DISPLAY -screen 0 1920x1080x24
+      #     background: true
+      # # start Pulseaudio with virtual sink and source
+      # - run: .circleci/start_pulseaudio.sh
+      # # build PulseEffects
+      # - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
+      # # start PulseEffects in service mode
+      # - run: pulseeffects --gapplication-service & sleep 5
+      # # open PE window
+      # - run: pulseeffects &
+      # # finish PE
+      # - run: pulseeffects -q
 
 workflows:
   version: 2
