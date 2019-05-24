@@ -9,7 +9,6 @@ jobs:
       DISPLAY: :10
       G_MESSAGES_DEBUG: pulseeffects
     steps:
-      - checkout
       - run: mkdir -p pacman_cache && pacman -Sy --noconfirm && pacman -S tar --noconfirm
       - run: pacman -Sc --noconfirm --cachedir pacman_cache
       - restore_cache:
@@ -33,19 +32,19 @@ jobs:
           background: true
       # start Pulseaudio with virtual sink and source
       - run: .circleci/start_pulseaudio.sh
-      - run:
-          name: Starting a GStreamer pipeline
-          command: gst-launch-1.0 -v audiotestsrc ! queue ! pulsesink
       # build PulseEffects
+      - checkout
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       - run:
           name: Starting a GStreamer pipeline
           command: gst-launch-1.0 -v audiotestsrc ! queue ! pulsesink
           background: true
+      - run: sleep 10
       - run:
           name: Starting PE service
           command: pulseeffects --gapplication-service
           background: true
+      - run: sleep 10
 
 workflows:
   version: 2
