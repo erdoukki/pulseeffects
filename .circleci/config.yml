@@ -37,7 +37,7 @@ jobs:
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       - run:
           name: Starting a GStreamer pipeline
-          command: gst-launch pulsesrc ! queue ! pulsesink
+          command: gst-launch-1.0 pulsesrc ! queue ! pulsesink
           background: true
       - run:
           name: Starting PE service
