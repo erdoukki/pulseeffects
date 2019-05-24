@@ -29,7 +29,7 @@ jobs:
           background: true
       - run:
           name: Starting Xvfb
-          command: Xvfb $DISPLAY -screen 0 1920x1080x24
+          command: Xvfb $DISPLAY -screen 0 1280x1024x24
           background: true
       # start Pulseaudio with virtual sink and source
       - run: .circleci/start_pulseaudio.sh
@@ -37,7 +37,7 @@ jobs:
       - run: meson build && cd build && ninja -j 1 && ninja -j 1 install
       - run:
           name: Starting a GStreamer pipeline
-          command: gst-launch-1.0 pulsesrc ! queue ! pulsesink
+          command: gst-launch-1.0 -v pulsesrc ! queue ! pulsesink
           background: true
       - run:
           name: Starting PE service
