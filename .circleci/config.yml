@@ -10,7 +10,7 @@ jobs:
       G_MESSAGES_DEBUG: pulseeffects
     steps:
       - checkout
-      - run: mkdir -p pacman_cache && pacman -Sy --noconfirm && pacman -S tar
+      - run: mkdir -p pacman_cache && pacman -Sy --noconfirm && pacman -S tar --noconfirm
       - restore_cache:
           keys:
             - pacman-cache
